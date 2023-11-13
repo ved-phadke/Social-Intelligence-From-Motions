@@ -3,7 +3,7 @@
 Creating a demo using a pre-trained model based on VEATIC dataset. 
 
 ## Original VEATIC
-- The original code is [here](Veatic.github.io)
+- The original code is [here](https://veatic.github.io/)
 
 - The VEATIC dataset is [here](https://drive.google.com/file/d/1HZIw8RGsRwwENhJlhNJRL88YyfiE442N/view)
 
