@@ -51,7 +51,42 @@ def save_video_frame():
             i += 1
         video_cap.release()
 
+def save_video_frame(video_file_path, save_path):
+    '''
+    overloaded function with explicit filepaths
+    Params: video_file_path (string), save_path (string)
+    Returns: path_save_video (string)
+    '''
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+        
+    name_video = os.path.basename(video_file_path)
+    path_save_video = os.path.join(save_path, name_video[:-4])
+    
+    if not os.path.exists(path_save_video):
+        os.makedirs(path_save_video)
+    
+    video_cap = cv2.VideoCapture(video_file_path)
+    
+    video_fps = video_cap.get(cv2.CAP_PROP_FPS)
+    video_size = (int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH)), 
+                  int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
+    video_fNUMS = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    
+    print("FPS:", video_fps)
+    print("Size:", video_size)
+    print("Frame count:", video_fNUMS)
+    
+    i = 0
+    video_success, video_frame = video_cap.read()
+    
+    while video_success:
+        cv2.imwrite(os.path.join(path_save_video, f"{i}.jpg"), video_frame)
+        video_success, video_frame = video_cap.read()
+        i += 1
+    video_cap.release()
 
+    return path_save_video 
         
 if __name__ == "__main__":
     save_video_frame()

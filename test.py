@@ -33,6 +33,44 @@ def process_frames(data_path, transform):
         frames.append(image)
     return torch.stack(frames)
 
+def run_model(frames_path, device):
+    '''
+    function of main routine meant for easier OOP integration
+    Params: frames_path (string), device (torch device)
+    returns: all_preds (2-d array of predictions)
+    '''
+    weights_path = '/Users/vedphadke/Documents/GitHub/VEATIC/one_stream_vit.pth'  # Update this path as necessary
+
+    model = load_model(weights_path, device)
+
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+    ])
+
+    frames_tensor = process_frames(frames_path, transform)
+    preds = []
+
+    # Testing loop in groups of 5
+    for i in range(0, len(frames_tensor), 5):
+        subset_frames = frames_tensor[i:i+5].to(device)
+        
+        # Padding if necessary
+        if subset_frames.size(0) < 5:
+            padding = torch.zeros(5 - subset_frames.size(0), *subset_frames.size()[1:])
+            subset_frames = torch.cat((subset_frames, padding), dim=0)
+
+        subset_frames_batch = subset_frames.unsqueeze(0)  # Add batch dimension
+
+        with torch.no_grad():
+            predictions = model(subset_frames_batch)
+            preds.append(predictions.cpu().numpy())
+
+    all_preds = np.concatenate(preds, axis=0)
+
+    # returning preds
+    return all_preds
+
 def visualize_results(valence_arousal):
     '''
     void function to visualize model predictions of valence and arousal
