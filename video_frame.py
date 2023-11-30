@@ -51,15 +51,19 @@ def save_video_frame():
             i += 1
         video_cap.release()
 
+
 def save_video_frame(video_file_path, save_path):
     '''
-    overloaded function with explicit filepaths
-    Params: video_file_path (string), save_path (string)
-    Returns: path_save_video (string)
+    Save frames from a video file to a specified directory.
+    Params:
+        video_file_path (str): Path to the video file.
+        save_path (str): Path to the directory where frames will be saved.
+    Returns:
+        tuple: (path to the directory containing saved frames, list of frame timestamps or numbers)
     '''
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-        
+
     name_video = os.path.basename(video_file_path)
     path_save_video = os.path.join(save_path, name_video[:-4])
     
@@ -69,24 +73,24 @@ def save_video_frame(video_file_path, save_path):
     video_cap = cv2.VideoCapture(video_file_path)
     
     video_fps = video_cap.get(cv2.CAP_PROP_FPS)
-    video_size = (int(video_cap.get(cv2.CAP_PROP_FRAME_WIDTH)), 
-                  int(video_cap.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    video_fNUMS = video_cap.get(cv2.CAP_PROP_FRAME_COUNT)
+    video_fNUMS = int(video_cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    print("FPS:", video_fps)
-    print("Size:", video_size)
-    print("Frame count:", video_fNUMS)
-    
+    frame_timestamps = []
     i = 0
     video_success, video_frame = video_cap.read()
     
     while video_success:
+        frame_timestamp = i / video_fps  # Calculate timestamp of the frame
+        frame_timestamps.append(frame_timestamp)
+
         cv2.imwrite(os.path.join(path_save_video, f"{i}.jpg"), video_frame)
         video_success, video_frame = video_cap.read()
         i += 1
+    
     video_cap.release()
 
-    return path_save_video 
+    return path_save_video, frame_timestamps
+
         
 if __name__ == "__main__":
     save_video_frame()
