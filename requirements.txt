@@ -9,6 +9,6 @@ torch==2.0.1
 torchvision==0.15.2
 tqdm==4.64.0
 plotly==5.18.0
-freeglut3-dev
-libgtk2.0-dev
-libgl1-mesa-glx
+# freeglut3-dev
+# libgtk2.0-dev
+# libgl1-mesa-glx
